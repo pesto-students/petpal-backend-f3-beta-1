@@ -90,14 +90,16 @@ router.get("/logout", (req, res) => {
   console.log('Logout');
   const {userId} = req.body;  
   res.clearCookie('jwtoken',{path: '/'})
-  res.status(200).send('User Logout Done.');
+  res.status(200);
 });
 
 router.get('/images/:key', (req, res) => {
-  const key = req.params.key
   try {
-    const readStream = getFileStream(key)
-    readStream.pipe(res)    
+    const key = req.params.key
+    if(key){
+      const readStream = getFileStream(key)
+      readStream.pipe(res)
+    }
   } catch (error) {
     console.log(error);
   }
