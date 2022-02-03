@@ -36,7 +36,6 @@ router.get("/dashboard", authenticate , (req, res) => {
 
 router.post("/signup", async (req, res) => {
   const { name, email, phone, location, password, cpassword } = req.body;
-  console.log(req.body);
   if (!name || !email || !phone || !location || !password || !cpassword) {
     res.status(422).json({ error: "Plz fill the required field" });
   }
@@ -108,15 +107,11 @@ router.get('/images/:key', (req, res) => {
 router.post('/images', upload.single('image'), async (req, res) => {
   const file = req.file
   const {petId} = req.body;
-  console.log(petId, "image upload");
   const pet = await Pet.findOne({_id: petId});
-  console.log(pet);
   if(pet){
     const result = await uploadFile(file)
-    console.log(result);
     pet.petimages = pet.petimages.concat({ image: result.Key });
     await pet.save();  
-    console.log(pet);
     console.log("image saved");
     res.send(result)
   }
@@ -132,7 +127,6 @@ router.post("/createpet", async (req, res) => {
   }
   try {
     const pet = new Pet({userId,about,adoptionFee,age,gender,petcategory,petname,selectedPet,size,adoptedBy });
-    console.log(petimage)
     await petimage.map(image=>{pet.petimages = pet.petimages.concat({ image: image })});
     const data = await pet.save();
     res.json({ message: "Pet added successfully!!!",data: data });  
@@ -143,7 +137,6 @@ router.post("/createpet", async (req, res) => {
 });
 
 router.get("/fetchpet", authenticate ,async (req, res) => {
-  console.log(req.userID,"Pet details called");
   const petDetails = await Pet.find({userId: req.userID})
   if(petDetails){
     res.status(200).send(petDetails);
@@ -198,7 +191,7 @@ router.get("/petindetail/:petid", authenticate ,async (req, res) => {
   const petid = req.params.petid
   const petDetails = await Pet.findOne({_id: petid})
   if(petDetails){
-    res.send(petDetails).sendStatus(200);
+    res.send(petDetails);
   }
   else{
     res.sendStatus(400);
@@ -207,14 +200,11 @@ router.get("/petindetail/:petid", authenticate ,async (req, res) => {
 
 router.post("/petindetails", authenticate ,async (req, res) => {
   const {petId,userId} = req.body;
-  console.log(petId,userId,"petdetails called");
   const petDetails = await Pet.findOne({_id: petId})
   if(petDetails){
     const userIndex = petDetails.requests.findIndex(item => item.userId === userId)
-    console.log(petDetails.requests[userIndex].requestStatus);
     if(petDetails.requests[userIndex].requestStatus){
       const user = await User.findOne({_id:petDetails.userId})
-      console.log(user);
       if(user){
         res.send({petDetails,user,status:true});
       }
@@ -282,7 +272,6 @@ router.get("/username/:userId", authenticate ,async (req, res) => {
 
 router.post("/updatepassword", authenticate, async (req, res) => {
   const {_id, password, newPassword } = req.body;
-  console.log(_id, password, newPassword);
   if (!password || !newPassword) {
     res.status(422).json({ error: "Plz fill the required field" });
   }
