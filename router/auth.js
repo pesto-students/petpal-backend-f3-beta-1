@@ -280,5 +280,51 @@ router.get("/username/:userId", authenticate ,async (req, res) => {
   }
 });
 
+router.post("/updatepassword", authenticate, async (req, res) => {
+  const {_id, password, newPassword } = req.body;
+  console.log(_id, password, newPassword);
+  if (!password || !newPassword) {
+    res.status(422).json({ error: "Plz fill the required field" });
+  }
+  try {
+    const userlogin = await User.findOne({ _id: _id });
+    if (userlogin) {
+      const isMatch = await bcrypt.compare(password, userlogin.password);
+      if (isMatch) {
+        userlogin.password = newPassword;
+        await userlogin.save();
+        console.log("password updated")
+        return send(userlogin);
+      } else {
+        return res.status(400).json({ message: "Invalid Credentials" });
+      }
+    } else {
+      return res.status(400).json({ error: "Invalid Credentials" });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+router.post("/updatelocation", authenticate, async (req, res) => {
+  const {_id, location} = req.body;
+  if (!location) {
+    res.status(422).json({ error: "Plz fill the required field" });
+  }
+  try {
+    const userlogin = await User.findOne({ _id: _id });
+    if (userlogin) {
+      userlogin.location = location;
+      await userlogin.save();
+      console.log("location updated")
+      return send(userlogin);    
+    } else {
+      return res.status(400).json({ error: "Invalid Credentials" });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+});
+
 
 module.exports = router;
