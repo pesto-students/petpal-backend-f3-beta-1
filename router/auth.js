@@ -86,7 +86,7 @@ router.post("/signin", async (req, res) => {
 });
 
 //Logout Page
-router.get("/userlogout", (req, res) => {
+router.get("/logout", (req, res) => {
   console.log('Logout');
   const {userId} = req.body;  
   res.clearCookie('jwtoken',{path: '/'})
