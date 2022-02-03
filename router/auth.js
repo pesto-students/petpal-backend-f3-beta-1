@@ -90,7 +90,7 @@ router.get("/userlogout", (req, res) => {
   console.log('Logout');
   const {userId} = req.body;  
   res.clearCookie('jwtoken',{path: '/'})
-  res.status(200).send({message:"User logged out successfully!!"});
+  res.send({message:"User logged out successfully!!"});
 });
 
 router.get('/images/:key', (req, res) => {
@@ -219,7 +219,9 @@ router.post("/petindetails", authenticate ,async (req, res) => {
         res.send({petDetails,user,status:true});
       }
     }
-    res.send({petDetails,status:false});
+    else{
+      res.send({petDetails,status:false});
+    }
   }
   else{
     res.sendStatus(400);
