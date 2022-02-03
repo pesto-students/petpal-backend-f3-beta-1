@@ -86,11 +86,11 @@ router.post("/signin", async (req, res) => {
 });
 
 //Logout Page
-router.get("/logout", (req, res) => {
+router.get("/userlogout", (req, res) => {
   console.log('Logout');
   const {userId} = req.body;  
   res.clearCookie('jwtoken',{path: '/'})
-  res.status(200);
+  res.status(200).send({message:"User logged out successfully!!"});
 });
 
 router.get('/images/:key', (req, res) => {
