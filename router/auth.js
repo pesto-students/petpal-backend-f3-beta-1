@@ -210,7 +210,6 @@ router.post("/petindetails", authenticate ,async (req, res) => {
   console.log(petId,userId,"petdetails called");
   const petDetails = await Pet.findOne({_id: petId})
   if(petDetails){
-    // res.send(petDetails);
     const userIndex = petDetails.requests.findIndex(item => item.userId === userId)
     console.log(petDetails.requests[userIndex].requestStatus);
     if(petDetails.requests[userIndex].requestStatus){
@@ -221,7 +220,6 @@ router.post("/petindetails", authenticate ,async (req, res) => {
       }
     }
     res.send({petDetails,status:false});
-    res.sendStatus(200);
   }
   else{
     res.sendStatus(400);
@@ -232,10 +230,10 @@ router.get("/category/:category", authenticate ,async (req, res) => {
   const category = req.params.category;
   const petDetails = await Pet.find({ petcategory: category })
   if(petDetails){
-    res.status(200).send(petDetails);
+    res.send(petDetails);
   }
   else{
-    res.send(400);
+    res.sendStatus(400);
   }
 });
 
@@ -249,7 +247,6 @@ router.post("/like", authenticate ,async (req, res) => {
     petDetails.likes = petDetails.likes.concat({ userId: userId});
     await petDetails.save();
     res.send(petDetails);
-    res.sendStatus(200);
   }
   else{
     res.sendStatus(400);
@@ -267,7 +264,6 @@ router.post("/unlike", authenticate ,async (req, res) => {
     petDetails.likes = petDetails.likes.filter((item) => item.userId !== userId);
     await petDetails.save();
     res.send(petDetails);
-    res.sendStatus(200);
   }
   else{
     res.sendStatus(400);
@@ -278,7 +274,7 @@ router.get("/username/:userId", authenticate ,async (req, res) => {
   const id = req.params.userId
   const user = await User.find({_id: id})
   if(user){
-    res.send(user).sendStatus(200);
+    res.send(user);
   }
 });
 
@@ -298,10 +294,10 @@ router.post("/updatepassword", authenticate, async (req, res) => {
         console.log("password updated")
         return send(userlogin);
       } else {
-        return res.status(400).json({ message: "Invalid Credentials" });
+        return res.sendStatus(400);
       }
     } else {
-      return res.status(400).json({ error: "Invalid Credentials" });
+      return res.sendStatus(400);
     }
   } catch (error) {
     res.send(error);
@@ -321,7 +317,7 @@ router.post("/updatelocation", authenticate, async (req, res) => {
       console.log("location updated")
       return send(userlogin);    
     } else {
-      return res.status(400).json({ error: "Invalid Credentials" });
+      return res.sendStatus(400);
     }
   } catch (error) {
     res.send(error);
