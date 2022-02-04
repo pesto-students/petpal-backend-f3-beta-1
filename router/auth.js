@@ -12,7 +12,7 @@ const Pet = require("../model/petSchema");
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
-const { uploadFile, getFileStream } = require('../images/s3')
+const { uploadFile, getFileStream, deleteFile } = require('../images/s3')
 
 const fs = require('fs')
 const util = require('util')
@@ -180,7 +180,7 @@ router.post("/sendrespond", authenticate ,async (req, res) => {
     petDetails.requests[index] = { userId: userId, requestStatus: true }
     await petDetails.save();
     res.send(petDetails);
-    res.sendStatus(200);
+    // res.sendStatus(200);
   }
   else{
     res.sendStatus(400);
@@ -315,5 +315,23 @@ router.post("/updatelocation", authenticate, async (req, res) => {
   }
 });
 
+router.post('/userdpupload', upload.single('image'), async (req, res) => {
+  const file = req.file
+  const {userID} = req.body;
+  const user = await User.findOne({_id: userID});
+  if(user){
+    if(user.profileimage){
+      console.log(user.profileimage);
+      const delResult = await deleteFile(user.profileimage)
+      console.log(delResult);
+    }
+    const result = await uploadFile(file)
+    user.profileimage = result.Key;
+    await user.save();  
+    console.log("DP saved");
+    res.send(result)
+  }
+  await unlinkFile(file.path)
+});
 
 module.exports = router;
