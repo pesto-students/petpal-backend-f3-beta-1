@@ -130,7 +130,6 @@ router.post("/createpet", async (req, res) => {
     await petimage.map(image=>{pet.petimages = pet.petimages.concat({ image: image })});
     const data = await pet.save();
     res.json({ message: "Pet added successfully!!!",data: data });  
-    res.sendStatus(201)
   } catch (error) {
     console.log(error);
   }
@@ -139,7 +138,7 @@ router.post("/createpet", async (req, res) => {
 router.get("/fetchpet", authenticate ,async (req, res) => {
   const petDetails = await Pet.find({userId: req.userID})
   if(petDetails){
-    res.status(200).send(petDetails);
+    res.send(petDetails);
   }
   else{
     res.send(400);
