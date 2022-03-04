@@ -77,7 +77,7 @@ router.post("/signin", async (req, res) => {
         return res.status(400).json({ message: "Invalid Credentials" });
       }
     } else {
-      return res.status(400).json({ error: "Invalid Credentials" });
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
   } catch (error) {
     res.send(error);
