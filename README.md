@@ -23,7 +23,7 @@ Provide accessibility to high-quality adoptable pets. Increase the overall effec
 
 ## **Project Demo**
 
-<a href="petpalbackend.herokuapp.com/">
+<a href="https://petpalbackend.herokuapp.com/">
     <p>Live Demo</p>
  </a>
  
